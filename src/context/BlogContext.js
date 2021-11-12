@@ -1,6 +1,15 @@
-import React,{ useState } from "react";
+import React,{ useState, useReducer } from "react";
 
 const BlogContext = React.createContext({});
+
+const blogReducer = (state, action) => {
+    switch(action.type) {
+        case 'add_blog_post':
+            return [...state, {title: `Blog Post #${state.length + 1}`}];
+        default:
+            return state;
+    }
+};
 
 // the children prop below is same as we use render prop in our orion
 // we define a new component as a prop called render and then call {render}
@@ -8,10 +17,10 @@ const BlogContext = React.createContext({});
 
 // the below export is a named export and not the default export
 export const BlogProvider = ({children}) => {
-    const [blogPosts, setBlogPosts] = useState([]);
+    const [blogPosts, dispatch] = useReducer(blogReducer, []);
 
     const addBlogPost = () => {
-        setBlogPosts([...blogPosts, { title: `Blog Post #${blogPosts.length + 1}` }]);
+        dispatch({type: 'add_blog_post'});
     }
 
     return (
